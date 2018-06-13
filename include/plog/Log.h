@@ -111,3 +111,5 @@
 #define LOGE_IF_(instance, condition)           LOG_ERROR_IF_(instance, condition)
 #define LOGF_IF_(instance, condition)           LOG_FATAL_IF_(instance, condition)
 #define LOGN_IF_(instance, condition)           LOG_NONE_IF_(instance, condition)
+
+#define LOG_INST                                plog::get<PLOG_DEFAULT_INSTANCE>()

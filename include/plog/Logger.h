@@ -53,11 +53,53 @@ namespace plog
             {
                 (*it)->write(record);
             }
+            unsigned int nTid = plog::util::gettid();
+            m_mapLastLog[nTid] = record.getMessage();
+        }
+        void setLastMeg(const Record& record)
+        {
+            if(this == NULL)
+            {
+                return;
+            }
+            unsigned int nTid = plog::util::gettid();
+            m_mapLastLog[nTid] = record.getMessage();
+        }
+        util::nstring getLastMsg()
+        {
+            unsigned int nTid = plog::util::gettid();
+            if((this==NULL) || (m_mapLastLog.find(nTid)==m_mapLastLog.end()))
+            {
+#ifdef _WIN32
+                return L"";
+#else
+                return "";
+#endif
+            }
+            return m_mapLastLog[nTid];
+        }
+        std::string getLastMsgA()
+        {
+            unsigned int nTid = plog::util::gettid();
+            if((this==NULL) || (m_mapLastLog.find(nTid)==m_mapLastLog.end()))
+            {
+                return "";
+            }
+            util::nstring strMsg = getLastMsg();
+#if _WIN32
+            _bstr_t t = strMsg.c_str();
+            const char* pchar = (const char*)t;
+            string result = pchar;
+            return result;
+#else
+            return strMsg.c_str();
+#endif
         }
 
     private:
         Severity m_maxSeverity;
         std::vector<IAppender*> m_appenders;
+        map<unsigned int, util::nstring> m_mapLastLog;
     };
 
     template<int instance>
